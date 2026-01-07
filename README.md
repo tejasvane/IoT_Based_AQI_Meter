@@ -1,20 +1,29 @@
 🌫️ IoT Air Quality Monitor (ESP8266 + Blynk)
 
+
 A compact Wi-Fi enabled air quality monitoring system built using NodeMCU ESP8266.
 
 It continuously measures air pollution levels along with temperature and humidity, displays data locally on an OLED, and syncs everything to the Blynk IoT Cloud for remote monitoring and alerts.
 
 Designed for homes, labs, server rooms, and indoor spaces where air safety matters.
 
+
 ✨ Features
 
 • 📊 Real-time air quality monitoring (PPM)
+
 • 🌡️ Temperature & humidity sensing
+
 • 🖥️ Live OLED display (standalone operation)
+
 • 📱 Remote monitoring via Blynk mobile app
+
 • 🚨 Automatic visual & audio alerts
+
 • 🔕 Manual siren mute using hardware button
+
 • 🌐 Works over Wi-Fi (ESP8266)
+
 
 🔧 Hardware Used
 
@@ -25,6 +34,7 @@ Designed for homes, labs, server rooms, and indoor spaces where air safety matte
 5) Active Buzzer
 6) Push Button
 7) Status LEDs (Green / Yellow / Red)
+
 
 🧠 How It Works
 
@@ -50,29 +60,49 @@ Designed for homes, labs, server rooms, and indoor spaces where air safety matte
 
 8) A physical button allows muting the siren without disabling alerts.
 
+
 🚦 Air Quality Levels
+
 PPM Range     Status        Indication
- < 150         Safe         Green LED
+PPM < 150      Safe         Green LED
 150 – 350    Moderate       Yellow LED
- > 350       Dangerous   Red LED + Buzzer
+PPM > 350    Dangerous   Red LED + Buzzer
+
 
 📲 Blynk Dashboard
+
 The Blynk app provides:
+
 • Live AQI, temperature & humidity values
+
 • Visual indicators matching hardware LEDs
+
 • Remote access from anywhere
+
 • Push notifications during hazardous conditions
+
 Works even when you’re not near the device.
 
+
 🖥️ Local Display
+
 • The OLED shows:
+
 • Air quality value (PPM)
+
 • Temperature & humidity
+
 • System status (Wi-Fi & siren state)
+
 This allows the device to function without a phone.
 
+
 🧪 Calibration Note
+
 MQ135 sensors require:
+
 • Warm-up / burn-in time
+
 • Baseline adjustment for stable readings
+
 This project includes software offset correction to avoid false high values in clean air.
