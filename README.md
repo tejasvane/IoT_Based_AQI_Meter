@@ -64,8 +64,11 @@ Designed for homes, labs, server rooms, and indoor spaces where air safety matte
 🚦 Air Quality Levels
 
 PPM Range     Status        Indication
+
 PPM < 150      Safe         Green LED
+
 150 – 350    Moderate       Yellow LED
+
 PPM > 350    Dangerous   Red LED + Buzzer
 
 
