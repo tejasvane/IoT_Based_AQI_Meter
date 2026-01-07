@@ -2,6 +2,7 @@
 A compact Wi-Fi enabled air quality monitoring system built using NodeMCU ESP8266.
 It continuously measures air pollution levels along with temperature and humidity, displays data locally on an OLED, and syncs everything to the Blynk IoT Cloud for remote monitoring and alerts.
 Designed for homes, labs, server rooms, and indoor spaces where air safety matters.
+
 ✨ Features
 📊 Real-time air quality monitoring (PPM)
 🌡️ Temperature & humidity sensing
@@ -10,6 +11,7 @@ Designed for homes, labs, server rooms, and indoor spaces where air safety matte
 🚨 Automatic visual & audio alerts
 🔕 Manual siren mute using hardware button
 🌐 Works over Wi-Fi (ESP8266)
+
 🔧 Hardware Used
 NodeMCU ESP8266
 MQ135 Air Quality Sensor
@@ -18,21 +20,25 @@ DHT11 Temperature & Humidity Sensor
 Active Buzzer
 Push Button
 Status LEDs (Green / Yellow / Red)
+
 🧠 How It Works
 MQ135 detects harmful gases and outputs an analog signal.
 DHT11 provides temperature and humidity data.
 ESP8266 processes sensor values and estimates air quality in PPM.
+
 System categorizes air quality into:
 Safe
 Moderate
 Dangerous
 Status is shown locally on an OLED display.
 Data is sent to Blynk Cloud every few seconds.
+
 When pollution exceeds safe limits:
 Red LED turns ON
 Buzzer activates
 Mobile alert is triggered
 A physical button allows muting the siren without disabling alerts.
+
 🚦 Air Quality Levels
 PPM Range
 Status
@@ -46,6 +52,7 @@ Yellow LED
 > 350
 Dangerous
 Red LED + Buzzer
+> 
 📲 Blynk Dashboard
 The Blynk app provides:
 Live AQI, temperature & humidity values
@@ -53,33 +60,14 @@ Visual indicators matching hardware LEDs
 Remote access from anywhere
 Push notifications during hazardous conditions
 Works even when you’re not near the device.
+
 🖥️ Local Display
 The OLED shows:
 Air quality value (PPM)
 Temperature & humidity
 System status (Wi-Fi & siren state)
 This allows the device to function without a phone.
-🔌 Pin Connections (NodeMCU)
-Component
-Pin
-MQ135 (AO)
-A0
-DHT11 Data
-D4
-OLED SDA
-D2
-OLED SCL
-D1
-Buzzer
-D0
-Button
-D3
-Green LED
-D5
-Yellow LED
-D6
-Red LED
-D7
+
 🧪 Calibration Note
 MQ135 sensors require:
 Warm-up / burn-in time
