@@ -109,3 +109,12 @@ MQ135 sensors require:
 • Baseline adjustment for stable readings
 
 This project includes software offset correction to avoid false high values in clean air.
+
+
+📂 Project Media & Documentation
+
+Due to GitHub size limits, full project media (videos, high-resolution images, and detailed documentation) is hosted externally.
+
+🔗 Google Drive Folder:
+
+👉https://drive.google.com/drive/folders/1ctbep8E0ZhcNZKa_j7fra1M3pKoMHA3k
