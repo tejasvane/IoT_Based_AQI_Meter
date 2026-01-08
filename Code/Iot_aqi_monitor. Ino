@@ -1,0 +1,128 @@
+#define BLYNK_TEMPLATE_ID "TMPL3J1HWGeVb"
+#define BLYNK_TEMPLATE_NAME "IoT AQI Sentinel"
+#define BLYNK_AUTH_TOKEN "q-YO4iABkszh6ZtgL-EIYUHN83L7X_Fw"
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+#include <DHT.h>
+#include <MQ135.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+// --- Hardware Pins ---
+#define DHTPIN D4
+#define MQ135_PIN A0
+#define GREEN_LED D5
+#define YELLOW_LED D6
+#define RED_LED D7
+#define BUZZER_PIN D0
+#define BUTTON_PIN D3 
+
+// --- WiFi Credentials ---
+char ssid[] = "NARZO 70 5G";
+char pass[] = "0100100010001";
+
+// --- Object Init ---
+DHT dht(DHTPIN, DHT11);
+Adafruit_SSD1306 display(128, 64, &Wire, -1);
+
+// --- Variables ---
+bool sirenEnabled = true;
+int lastBtnState = HIGH;
+
+void updateDisplay(float t, float h, int aqi) {
+  display.clearDisplay();
+  display.setTextColor(WHITE);
+  
+  // Status Bar
+  display.setTextSize(1);
+  display.setCursor(0,0);
+  display.print("Blynk:OK ");
+  display.print(sirenEnabled ? "Srn:ON" : "Srn:OFF");
+  display.drawFastHLine(0, 10, 128, WHITE);
+
+  // Small Temp/Hum
+  display.setCursor(0, 15);
+  display.print("Temp: "); display.print(t, 1); display.print(" C");
+  display.setCursor(0, 25);
+  display.print("Hum : "); display.print(h, 1); display.print(" %");
+
+  // AQI Section
+  display.setCursor(0, 40);
+  display.print("Air Quality (PPM):");
+  display.setTextSize(2); 
+  display.setCursor(30, 50);
+  display.print(aqi);
+  
+  display.display();
+}
+
+void sendData() {
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+  
+  if (isnan(h) || isnan(t)) return;
+
+  // 1. Read Raw and Subtract Offset to fix "Stuck at 700"
+  int raw_adc = analogRead(MQ135_PIN);
+  int adjusted = raw_adc - 680; // This 680 pulls your high baseline down
+  if (adjusted < 0) adjusted = 0;
+
+  // 2. Map to PPM Scale
+  int aqi = map(adjusted, 0, (1024 - 680), 0, 1000);
+
+  // 3. Logic for LEDs and Siren
+  bool greenOn = (aqi < 150);
+  bool yellowOn = (aqi >= 150 && aqi < 350);
+  bool redOn = (aqi >= 350);
+
+  digitalWrite(GREEN_LED, greenOn);
+  digitalWrite(YELLOW_LED, yellowOn);
+  digitalWrite(RED_LED, redOn);
+  digitalWrite(BUZZER_PIN, (redOn && sirenEnabled) ? HIGH : LOW);
+
+  // 4. Update Blynk (V0-V7, skipping V3)
+  Blynk.virtualWrite(V0, t);
+  Blynk.virtualWrite(V1, h);
+  Blynk.virtualWrite(V2, aqi);
+  Blynk.virtualWrite(V4, sirenEnabled ? "ON" : "OFF");
+  Blynk.virtualWrite(V5, greenOn ? 255 : 0);
+  Blynk.virtualWrite(V6, yellowOn ? 255 : 0);
+  Blynk.virtualWrite(V7, redOn ? 255 : 0);
+
+  updateDisplay(t, h, aqi);
+}
+
+void setup() {
+  pinMode(GREEN_LED, OUTPUT); 
+  pinMode(YELLOW_LED, OUTPUT);
+  pinMode(RED_LED, OUTPUT); 
+  pinMode(BUZZER_PIN, OUTPUT);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+
+  dht.begin();
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  display.clearDisplay();
+  
+  // Connects to your NARZO hotspot
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+}
+
+void loop() {
+  Blynk.run();
+  
+  // Siren Mute Button Check
+  int btn = digitalRead(BUTTON_PIN);
+  if (btn == LOW && lastBtnState == HIGH) {
+    delay(50); // Debounce
+    sirenEnabled = !sirenEnabled;
+  }
+  lastBtnState = btn;
+
+  // Run every 2 seconds
+  static unsigned long lastUpdate = 0;
+  if (millis() - lastUpdate > 2000) {
+    sendData();
+    lastUpdate = millis();
+  }
+}
